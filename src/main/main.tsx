@@ -93,43 +93,53 @@ export const WorkItemSKUInput: React.FunctionComponent = () => {
   function getSettings() {
     if (!settings)
     {
-      if (sourceURL)
-      {
-      fetch(sourceURL)
-        // the JSON body is taken from the response
-        .then(res => res.json())
-        .then(res => {
-                // The response has an `any` type, so we need to cast
-                // it to the `User` type, and return it from the promise
-                console.log("Downloading settings");
-                
-                var dlsettings = res as ISettings;
+      SDK.init().then(() => {
 
-                var sett = settings;
+        setFieldName1(SDK.getConfiguration().witInputs["FieldLevel1"]);
+        setFieldName2(SDK.getConfiguration().witInputs["FieldLevel2"]);
+        setFieldName3(SDK.getConfiguration().witInputs["FieldLevel3"]);
+        setFieldName4(SDK.getConfiguration().witInputs["FieldLevel4"]);
+        var url = SDK.getConfiguration().witInputs["SourceURL"];
+        
+        setSourceURL(url);
+  
+        registerEvents();
 
-                setSettings(sett);
+        if (url)
+        {
+          fetch(url)
+            // the JSON body is taken from the response
+            .then(res => res.json())
+            .then(res => {
+                    // The response has an `any` type, so we need to cast
+                    // it to the `User` type, and return it from the promise
+                    console.log("Downloading settings");
+                    
+                    var dlsettings = res as ISettings;
+    
+                    setSettings(dlsettings);
+              
+            });
+          } else {
+            console.log("No source URL set to retrieve options from");
+          }
+ 
+      });
 
-                SDK.init().then(() => {
 
-                  setFieldName1(SDK.getConfiguration().witInputs["FieldLevel1"]);
-                  setFieldName2(SDK.getConfiguration().witInputs["FieldLevel2"]);
-                  setFieldName3(SDK.getConfiguration().witInputs["FieldLevel3"]);
-                  setFieldName4(SDK.getConfiguration().witInputs["FieldLevel4"]);
-                  setSourceURL(SDK.getConfiguration().witInputs["SourceURL"]);
-            
-                  registerEvents();
-                });
-            
-        });
-      } else {
-        console.log("No source URL set to retrieve options from");
-      }
     }
   }
 
-  function getOptions1(ap: string, wit: string) {
+  React.useEffect(() => {
+    getOptions1();
+  },[settings]);
+
+
+  function getOptions1() {
 
     var opts: IDropdownOption[] = [];
+
+    console.log(settings);
 
     if (settings?.levels[0] && settings?.levels[0].items.length > 0) {
       settings?.levels[0].items.forEach((i: IItem) => {
@@ -148,7 +158,7 @@ export const WorkItemSKUInput: React.FunctionComponent = () => {
 
   React.useEffect(() => {
     getSettings();
-  });
+  },[]);
 
   const getCurrentValues = async () => {
     const workItemFormService = await SDK.getService<IWorkItemFormService>(

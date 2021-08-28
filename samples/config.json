@@ -4,13 +4,13 @@
             "label": "Level 1",
             "items": [
                 {
-                    "item": {
+                    "options": {
                         "key": "item1",
                         "text": "This is the first item"
                     }
                 },
                 {
-                    "item": {
+                    "options": {
                         "key": "item2",
                         "text": "This is the second item"
                     }
@@ -23,28 +23,28 @@
             "items": [
                 {
                     "previousLevelKey": "item1",
-                    "item": {
+                    "options": {
                         "key": "item1-1",
                         "text": "L1-1 #1"
                     }
                 },
                 {
                     "previousLevelKey": "item1",
-                    "item": {
+                    "options": {
                         "key": "item1-2",
                         "text": "L1-2 #2"
                     }
                 },
                 {
                     "previousLevelKey": "item2",
-                    "item": {
+                    "options": {
                         "key": "item2-1",
                         "text": "L1-2 #1"
                     }
                 },
                 {
                     "previousLevelKey": "item2",
-                    "item": {
+                    "options": {
                         "key": "item2-2",
                         "text": "L1-2 #2"
                     }
