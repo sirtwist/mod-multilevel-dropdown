@@ -131,18 +131,40 @@ export const WorkItemSKUInput: React.FunctionComponent = () => {
   }
 
   React.useEffect(() => {
-    getOptions1();
+    getOptions(0);
   },[settings]);
 
 
-  function getOptions1() {
+  function getOptions(level: number) {
 
     var opts: IDropdownOption[] = [];
 
-    console.log(settings);
+    if (settings?.levels[level] && settings?.levels[level].items.length > 0) {
+      var items = settings?.levels[level].items;
 
-    if (settings?.levels[0] && settings?.levels[0].items.length > 0) {
-      settings?.levels[0].items.forEach((i: IItem) => {
+      console.log(settings);
+      
+      if (settings?.levels[level] && settings?.levels[level].filterOnPreviousLevelKey == true)
+      {
+        console.log("filter");
+        items = items.filter(function (item) {
+          var prevkey = selectedItem1;
+          switch (level) {
+            case 1: {
+              prevkey = selectedItem2;
+            }
+            case 2: {
+              prevkey = selectedItem3;
+            }
+            case 3: {
+              prevkey = selectedItem4;
+            }
+          }
+          return item.previousLevelKey == prevkey;
+        });
+      }
+
+      items.forEach((i: IItem) => {
         opts.push({ key: i.options.key, text: i.options.key + " - " + i.options.text
         })
       });
@@ -150,12 +172,27 @@ export const WorkItemSKUInput: React.FunctionComponent = () => {
    
     console.log(opts);
     if (opts.length == 0) {
-      opts.push({ key: "NOSKU", text: "No SKUs available", itemType: SelectableOptionMenuItemType.Normal, disabled: true});
+      opts.push({ key: "", text: "No options available", itemType: SelectableOptionMenuItemType.Normal, disabled: true});
     }
 
-    setOptions1(opts);
+    switch (level) {
+      case 0: {
+        setOptions1(opts);
+      }
+      case 1: {
+        setOptions2(opts);
+      }
+      case 2: {
+        setOptions3(opts);
+      }
+      case 3: {
+        setOptions4(opts);
+      }
+    }
+    
   }
 
+  
   React.useEffect(() => {
     getSettings();
   },[]);
@@ -232,7 +269,7 @@ export const WorkItemSKUInput: React.FunctionComponent = () => {
       });
   }
 
-  const onChange = async (event: React.FormEvent<HTMLDivElement>, option?: IDropdownOption, index?: number) => {
+  const onChange1 = async (event: React.FormEvent<HTMLDivElement>, option?: IDropdownOption, index?: number) => {
         const workItemFormService = await SDK.getService<IWorkItemFormService>(
       WorkItemTrackingServiceIds.WorkItemFormService
     );
@@ -241,6 +278,20 @@ export const WorkItemSKUInput: React.FunctionComponent = () => {
 
     if (option) {
       workItemFormService.setFieldValue(fieldName1, option.key);
+      getOptions(1);
+    }
+  };
+
+  const onChange2 = async (event: React.FormEvent<HTMLDivElement>, option?: IDropdownOption, index?: number) => {
+        const workItemFormService = await SDK.getService<IWorkItemFormService>(
+      WorkItemTrackingServiceIds.WorkItemFormService
+    );
+
+    setSelectedItem1(option?.key.toString() ?? "");
+
+    if (option) {
+      workItemFormService.setFieldValue(fieldName1, option.key);
+      getOptions(2);
     }
   };
 
@@ -250,7 +301,7 @@ export const WorkItemSKUInput: React.FunctionComponent = () => {
  
 
   const onCollapse = () => {
-    SDK.resize(undefined, 100);
+    SDK.resize(undefined, 200);
   };
 
   const dropdownStyles: Partial<IDropdownStyles> = { dropdown: { width: 300 } };
@@ -262,9 +313,9 @@ export const WorkItemSKUInput: React.FunctionComponent = () => {
     return (
       <ThemeProvider theme={appTheme}>
         <Dropdown
-          label="Level 1"
+          label={settings?.levels.length ?? 0 > 0 ? settings?.levels[0].label : undefined}
           componentRef={dropdownRef1}
-          onChange={onChange}
+          onChange={onChange1}
           onFocus={onFocus}
           onBlur={onCollapse}
           options={options1}
@@ -273,12 +324,12 @@ export const WorkItemSKUInput: React.FunctionComponent = () => {
           responsiveMode={ResponsiveMode.large}
         />
         <Dropdown
-          label="Level 2"
+          label={settings?.levels.length ?? 0 > 1 ? settings?.levels[1].label : undefined}
           componentRef={dropdownRef2}
-          onChange={onChange}
+          onChange={onChange2}
           onFocus={onFocus}
           onBlur={onCollapse}
-          options={options1}
+          options={options2}
           //styles={dropdownStyles}
           selectedKey={selectedItem2 ? selectedItem2 : null}
           responsiveMode={ResponsiveMode.large}

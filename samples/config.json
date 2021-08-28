@@ -51,7 +51,7 @@
                 }
 
             ],
-            "filterOnPreviousLevelKey": false
+            "filterOnPreviousLevelKey": true
         }
     ]
 }
