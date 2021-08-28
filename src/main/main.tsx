@@ -54,16 +54,22 @@ const appTheme = createTheme({
     white: 'rgba(var(--palette-neutral-0),1)',
   }});
 
+interface IItem
+{
+    previousLevelKey: string;
+    options: IDropdownOption;
+}
+
+interface ILevelSettings
+{
+  label: string;
+  items: IItem[];
+  filterOnPreviousLevelKey: boolean;
+}
 
 interface ISettings
 {
-  level1items: IDropdownOption[];
-  level2filter: string; // key or blank (no filter)
-  level2items: IDropdownOption[];
-  level3filter: string; // key or blank (no filter)
-  level3items: IDropdownOption[];
-  level4filter: string; // key or blank (no filter)
-  level4items: IDropdownOption[];
+  levels: ILevelSettings[];
 }
 
 
@@ -125,9 +131,9 @@ export const WorkItemSKUInput: React.FunctionComponent = () => {
 
     var opts: IDropdownOption[] = [];
 
-    if (settings?.level1items && settings?.level1items.length > 0) {
-      settings?.level1items.forEach((i: IDropdownOption) => {
-        opts.push({ key: i.key, text: i.key + " - " + i.text
+    if (settings?.levels[0] && settings?.levels[0].items.length > 0) {
+      settings?.levels[0].items.forEach((i: IItem) => {
+        opts.push({ key: i.options.key, text: i.options.key + " - " + i.options.text
         })
       });
     }

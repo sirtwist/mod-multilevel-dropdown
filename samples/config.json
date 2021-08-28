@@ -1,0 +1,57 @@
+{
+    "levels": [
+        {
+            "label": "Level 1",
+            "items": [
+                {
+                    "item": {
+                        "key": "item1",
+                        "text": "This is the first item"
+                    }
+                },
+                {
+                    "item": {
+                        "key": "item2",
+                        "text": "This is the second item"
+                    }
+                }
+            ],
+            "filterOnPreviousLevelKey": false
+        },
+        {
+            "label": "Level 2",
+            "items": [
+                {
+                    "previousLevelKey": "item1",
+                    "item": {
+                        "key": "item1-1",
+                        "text": "L1-1 #1"
+                    }
+                },
+                {
+                    "previousLevelKey": "item1",
+                    "item": {
+                        "key": "item1-2",
+                        "text": "L1-2 #2"
+                    }
+                },
+                {
+                    "previousLevelKey": "item2",
+                    "item": {
+                        "key": "item2-1",
+                        "text": "L1-2 #1"
+                    }
+                },
+                {
+                    "previousLevelKey": "item2",
+                    "item": {
+                        "key": "item2-2",
+                        "text": "L1-2 #2"
+                    }
+                }
+
+            ],
+            "filterOnPreviousLevelKey": false
+        }
+    ]
+}
