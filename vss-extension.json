@@ -1,0 +1,108 @@
+{
+  "manifestVersion": 1,
+  "version": "0.1.0",
+  "description": "Multilevel Dropdown",
+  "publisher": "moddigital",
+  "demands": ["api-version/3.0"],
+  "categories": ["Azure Boards"],
+  "targets": [
+    {
+      "id": "Microsoft.VisualStudio.Services"
+    }
+  ],
+  "content": {
+    "details": {
+      "path": "README.md"
+    }
+  },
+  "icons": {
+    "default": "img/world.png"
+  },
+  "files": [
+    {
+      "path": "dist",
+      "addressable": true
+    },
+    {
+      "path": "img",
+      "addressable": true
+    }
+  ],
+  "contributions": [
+        {
+            "id": "mod-multilevel-control",
+            "type": "ms.vss-work-web.work-item-form-control",
+            "description": "Multilevel Dropdown Form Control",
+            "targets": [
+                "ms.vss-work-web.work-item-form"
+            ],
+            "properties": {
+                "name": "Multilevel Dropdown",
+                "uri": "dist/main/index.html",
+                "height": 100,
+                "inputs": [
+                  {
+                    "id": "SourceURL",
+                    "description": "The https URL to the JSON data to populate the dropdowns with",
+                    "type": "TextArea",
+                    "validation": {
+                        "dataType": "String",
+                        "isRequired": true
+                    }
+                  },
+                  {
+                      "id": "FieldLevel1",
+                      "description": "The field to store first level dropdown value in",
+                      "type": "WorkItemField",
+                      "properties": {
+                          "workItemFieldTypes": ["String"]
+                      },
+                      "validation": {
+                          "dataType": "String",
+                          "isRequired": true
+                      }
+                  },
+                  {
+                    "id": "FieldLevel2",
+                    "description": "The field to store second level dropdown value in",
+                    "type": "WorkItemField",
+                    "properties": {
+                        "workItemFieldTypes": ["String"]
+                    },
+                    "validation": {
+                        "dataType": "String",
+                        "isRequired": true
+                    }
+                  },
+                  {
+                    "id": "FieldLevel3",
+                    "description": "The field to store third level dropdown value in",
+                    "type": "WorkItemField",
+                    "properties": {
+                        "workItemFieldTypes": ["String"]
+                    },
+                    "validation": {
+                        "dataType": "String",
+                        "isRequired": false
+                    }
+                  },
+                  {
+                    "id": "FieldLevel4",
+                    "description": "The field to store fourth level dropdown value in",
+                    "type": "WorkItemField",
+                    "properties": {
+                        "workItemFieldTypes": ["String"]
+                    },
+                    "validation": {
+                        "dataType": "String",
+                        "isRequired": false
+                    }
+                }
+              ]
+            }
+        }
+    ],
+    "scopes": [
+        "vso.work"
+    ]
+}
