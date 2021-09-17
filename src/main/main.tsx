@@ -73,7 +73,7 @@ interface ISettings
 }
 
 
-export const WorkItemSKUInput: React.FunctionComponent = () => {
+export const MultilevelDropdown: React.FunctionComponent = () => {
       const[sourceURL, setSourceURL] = useState('');
       const[fieldName1, setFieldName1] = useState('');
       const[fieldName2, setFieldName2] = useState('');
@@ -116,8 +116,10 @@ export const WorkItemSKUInput: React.FunctionComponent = () => {
                     console.log("Downloading settings");
                     
                     var dlsettings = res as ISettings;
+
     
                     setSettings(dlsettings);
+
               
             });
           } else {
@@ -131,8 +133,38 @@ export const WorkItemSKUInput: React.FunctionComponent = () => {
   }
 
   React.useEffect(() => {
-    getOptions(0);
+    if (settings) {
+      console.log("Loading options 1");
+      getOptions(0);
+    }
   },[settings]);
+
+  React.useEffect(() => {
+    if (settings) {
+      console.log("Loading options 2");
+      getOptions(1);
+      setSelectedItem2("");
+      setSelectedItem3("");
+      setSelectedItem4("");
+    }
+  },[selectedItem1]);
+
+  React.useEffect(() => {
+    if (settings) {
+      console.log("Loading options 3");
+      getOptions(2);
+      setSelectedItem3("");
+      setSelectedItem4("");
+    }
+  },[selectedItem2]);
+
+  React.useEffect(() => {
+    if (settings) {
+      console.log("Loading options 4");
+      getOptions(3);
+      setSelectedItem4("");
+    }
+  },[selectedItem3]);
 
 
   function getOptions(level: number) {
@@ -142,25 +174,30 @@ export const WorkItemSKUInput: React.FunctionComponent = () => {
     if (settings?.levels[level] && settings?.levels[level].items.length > 0) {
       var items = settings?.levels[level].items;
 
-      console.log(settings);
-      
       if (settings?.levels[level] && settings?.levels[level].filterOnPreviousLevelKey == true)
       {
-        console.log("filter");
         items = items.filter(function (item) {
-          var prevkey = selectedItem1;
-          switch (level) {
+
+          var prevkey = "";
+          switch (level-1) {
+            case 0: {
+              prevkey = selectedItem1;
+              break;
+            }
             case 1: {
               prevkey = selectedItem2;
+              break;
             }
             case 2: {
               prevkey = selectedItem3;
+              break;
             }
             case 3: {
               prevkey = selectedItem4;
+              break;
             }
           }
-          return item.previousLevelKey == prevkey;
+          return item.previousLevelKey === prevkey;
         });
       }
 
@@ -170,7 +207,6 @@ export const WorkItemSKUInput: React.FunctionComponent = () => {
       });
     }
    
-    console.log(opts);
     if (opts.length == 0) {
       opts.push({ key: "", text: "No options available", itemType: SelectableOptionMenuItemType.Normal, disabled: true});
     }
@@ -178,15 +214,19 @@ export const WorkItemSKUInput: React.FunctionComponent = () => {
     switch (level) {
       case 0: {
         setOptions1(opts);
+        break;
       }
       case 1: {
         setOptions2(opts);
+        break;
       }
       case 2: {
         setOptions3(opts);
+        break;
       }
       case 3: {
         setOptions4(opts);
+        break;
       }
     }
     
@@ -204,23 +244,31 @@ export const WorkItemSKUInput: React.FunctionComponent = () => {
 
     workItemFormService.getFieldValue(fieldName1, {returnOriginalValue: true})
     .then((cv) => {
-      console.log("Current value: " + cv);
-      setSelectedItem1(cv ? cv.toString() : "");
+      console.log("Current level 1 value: " + cv);
+      if (cv) {
+        setSelectedItem1(cv.toString());
+      }
     });
     workItemFormService.getFieldValue(fieldName2, {returnOriginalValue: true})
     .then((cv) => {
-      console.log("Current value: " + cv);
-      setSelectedItem2(cv ? cv.toString() : "");
+      console.log("Current level 2 value: " + cv);
+      if (cv) {
+        setSelectedItem2(cv.toString());
+      }
     });
     workItemFormService.getFieldValue(fieldName3, {returnOriginalValue: true})
     .then((cv) => {
-      console.log("Current value: " + cv);
-      setSelectedItem3(cv ? cv.toString() : "");
+      console.log("Current level 3 value: " + cv);
+      if (cv) {
+        setSelectedItem3(cv.toString());
+      }
     });
     workItemFormService.getFieldValue(fieldName4, {returnOriginalValue: true})
     .then((cv) => {
-      console.log("Current value: " + cv);
-      setSelectedItem4(cv ? cv.toString() : "");
+      console.log("Current level 4 value: " + cv);
+      if (cv) {
+        setSelectedItem4(cv.toString());
+      }
     });
 
   }
@@ -274,11 +322,14 @@ export const WorkItemSKUInput: React.FunctionComponent = () => {
       WorkItemTrackingServiceIds.WorkItemFormService
     );
 
+    console.log("change 1");
+    console.log(option);
+
     setSelectedItem1(option?.key.toString() ?? "");
 
     if (option) {
+      console.log(fieldName1);
       workItemFormService.setFieldValue(fieldName1, option.key);
-      getOptions(1);
     }
   };
 
@@ -287,11 +338,46 @@ export const WorkItemSKUInput: React.FunctionComponent = () => {
       WorkItemTrackingServiceIds.WorkItemFormService
     );
 
-    setSelectedItem1(option?.key.toString() ?? "");
+    console.log("change 2");
+    console.log(option);
+
+    setSelectedItem2(option?.key.toString() ?? "");
 
     if (option) {
-      workItemFormService.setFieldValue(fieldName1, option.key);
-      getOptions(2);
+      console.log(fieldName2);
+      workItemFormService.setFieldValue(fieldName2, option.key);
+    }
+  };
+
+  const onChange3 = async (event: React.FormEvent<HTMLDivElement>, option?: IDropdownOption, index?: number) => {
+        const workItemFormService = await SDK.getService<IWorkItemFormService>(
+      WorkItemTrackingServiceIds.WorkItemFormService
+    );
+
+    console.log("change 3");
+    console.log(option);
+
+    setSelectedItem3(option?.key.toString() ?? "");
+
+    if (option) {
+      console.log(fieldName3);
+      workItemFormService.setFieldValue(fieldName3, option.key);
+    }
+  };
+
+  const onChange4 = async (event: React.FormEvent<HTMLDivElement>, option?: IDropdownOption, index?: number) => {
+      const workItemFormService = await SDK.getService<IWorkItemFormService>(
+    WorkItemTrackingServiceIds.WorkItemFormService
+    );
+
+    console.log("change 4");
+    console.log(option);
+
+    setSelectedItem4(option?.key.toString() ?? "");
+
+    if (option) {
+      console.log(fieldName4);
+      workItemFormService.setFieldValue(fieldName4, option.key);
     }
   };
 
@@ -313,7 +399,8 @@ export const WorkItemSKUInput: React.FunctionComponent = () => {
     return (
       <ThemeProvider theme={appTheme}>
         <Dropdown
-          label={settings?.levels.length ?? 0 > 0 ? settings?.levels[0].label : undefined}
+          label={(settings?.levels.length ?? 0) > 0 ? settings?.levels[0].label : undefined}
+          hidden={(settings?.levels.length ?? 0) < 1}
           componentRef={dropdownRef1}
           onChange={onChange1}
           onFocus={onFocus}
@@ -324,7 +411,8 @@ export const WorkItemSKUInput: React.FunctionComponent = () => {
           responsiveMode={ResponsiveMode.large}
         />
         <Dropdown
-          label={settings?.levels.length ?? 0 > 1 ? settings?.levels[1].label : undefined}
+          label={(settings?.levels.length ?? 0) > 1 ? settings?.levels[1].label : undefined}
+          hidden={(settings?.levels.length ?? 0) < 2}
           componentRef={dropdownRef2}
           onChange={onChange2}
           onFocus={onFocus}
@@ -334,12 +422,36 @@ export const WorkItemSKUInput: React.FunctionComponent = () => {
           selectedKey={selectedItem2 ? selectedItem2 : null}
           responsiveMode={ResponsiveMode.large}
         />
+        <Dropdown
+          label={(settings?.levels.length ?? 0) > 2 ? settings?.levels[2].label : ""}
+          hidden={(settings?.levels.length ?? 0) < 3}
+          componentRef={dropdownRef3}
+          onChange={onChange3}
+          onFocus={onFocus}
+          onBlur={onCollapse}
+          options={options3}
+          //styles={dropdownStyles}
+          selectedKey={selectedItem3 ? selectedItem3 : null}
+          responsiveMode={ResponsiveMode.large}
+        />
+        <Dropdown
+          label={(settings?.levels.length ?? 0) > 3 ? settings?.levels[3].label : ""}
+          hidden={(settings?.levels.length ?? 0) < 4}
+          componentRef={dropdownRef4}
+          onChange={onChange4}
+          onFocus={onFocus}
+          onBlur={onCollapse}
+          options={options4}
+          //styles={dropdownStyles}
+          selectedKey={selectedItem4 ? selectedItem4 : null}
+          responsiveMode={ResponsiveMode.large}
+        />
       </ThemeProvider>
       );
   
 
 }
 
-export default WorkItemSKUInput;
+export default MultilevelDropdown;
 
-showRootComponent(<WorkItemSKUInput />);
+showRootComponent(<MultilevelDropdown />);
